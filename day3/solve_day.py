@@ -1,8 +1,10 @@
+# DAY 0
+
 import argparse
 import logging
 from pathlib import Path
 import time
-from typing import List
+from typing import List, Callable, Tuple
 import sys
 
 _LOG_FORMATTER = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -11,7 +13,7 @@ _LOG = logging.getLogger(__name__)
 _LOG_STREAM_HANDLER = logging.StreamHandler()
 _LOG_STREAM_HANDLER.setFormatter(_LOG_FORMATTER)
 
-_LOG_FILE_HANDLER = logging.FileHandler(Path(__file__).parent / "result.log")
+_LOG_FILE_HANDLER = logging.FileHandler(Path(__file__).parent / "result.log", "w")
 _LOG_FILE_HANDLER.setFormatter(_LOG_FORMATTER)
 
 _LOG.addHandler(_LOG_FILE_HANDLER)
@@ -20,12 +22,42 @@ _LOG.addHandler(_LOG_STREAM_HANDLER)
 _LOG.setLevel(logging.DEBUG)
 
 
-def _part1(use_sample: bool) -> None:
-    pass
+def _part1(data: List) -> None:
+    total_sum = 0
+    for pack in data:
+        compartment_1 = set([*pack[:len(pack)//2]])
+        compartment_2 = set([*pack[len(pack)//2:]])
+
+        repeated_element = compartment_1.intersection(compartment_2).pop()
+
+        if repeated_element.isupper():
+            total_sum += ord(repeated_element) - 38
+        else:
+            total_sum += ord(repeated_element) - 96
+
+    return total_sum
 
 
-def _part2(use_sample: bool) -> None:
-    pass
+def _part2(data: List) -> None:
+    total_sum = 0
+    elf_groups = [data[x:x+3] for x in range(0, len(data), 3)]
+
+    for elf_group in elf_groups:
+        common_items = set()
+        for rucksack in elf_group:
+            if not common_items:
+                common_items = set([*rucksack])
+            else:
+                common_items = common_items.intersection(set([*rucksack]))
+
+        common_item = common_items.pop()
+        
+        if common_item.isupper():
+            total_sum += ord(common_item) - 38
+        else:
+            total_sum += ord(common_item) - 96
+
+    return total_sum
 
 
 def _load_data(file_path: Path) -> List:
@@ -34,7 +66,7 @@ def _load_data(file_path: Path) -> List:
     return lines
 
 
-def _solve(solver: function, part: int, use_sample: bool) -> None:
+def _solve(solver: Callable, part: int, use_sample: bool) -> None:
     start_time = time.time()
     _LOG.info(f"| Part {part} | File I/O |")
     if use_sample:

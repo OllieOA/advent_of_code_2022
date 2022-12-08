@@ -13,7 +13,7 @@ _LOG = logging.getLogger(__name__)
 _LOG_STREAM_HANDLER = logging.StreamHandler()
 _LOG_STREAM_HANDLER.setFormatter(_LOG_FORMATTER)
 
-_LOG_FILE_HANDLER = logging.FileHandler(Path(__file__).parent / "result.log")
+_LOG_FILE_HANDLER = logging.FileHandler(Path(__file__).parent / "result.log", "w")
 _LOG_FILE_HANDLER.setFormatter(_LOG_FORMATTER)
 
 _LOG.addHandler(_LOG_FILE_HANDLER)
