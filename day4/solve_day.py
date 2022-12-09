@@ -38,13 +38,11 @@ class Day4(Solver):
         for group in data:
             min_group0, max_group0, min_group1, max_group1 = self._get_group(group)
 
-            group0_range = range(min_group0, max_group0)
-            group1_range = list(range(min_group1, max_group1))
+            group0_range = set(range(min_group0, max_group0+1))
+            group1_range = set(range(min_group1, max_group1+1))
 
-            for idx in group0_range:
-                if idx in group1_range:
-                    any_overlap_count += 0
-                    break
+            if group0_range.intersection(group1_range):
+                any_overlap_count += 1
 
         return any_overlap_count
 
