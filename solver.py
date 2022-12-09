@@ -20,6 +20,7 @@ class Solver():
         self.use_sample = use_sample
         self.my_base_path = __file__
         self.day = -1
+        self.logger = _LOG
 
     def part1(self, data: List) -> None:
         # Implement
@@ -32,6 +33,8 @@ class Solver():
     def _load_data(self, file_path: Path) -> List:
         with open(file_path, "r") as f:
             lines = [x.strip("\n") for x in f.readlines()]
+
+        assert len(lines) > 0, "Did not load any data - check the file"
         return lines
 
     def _solve(self, solver: Callable, part: int, use_sample: bool) -> None:
