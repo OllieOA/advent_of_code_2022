@@ -3,9 +3,10 @@ from typing import List
 from solver import Solver
 
 class Day2(Solver):
-    def __init__(self, use_sample: bool) -> None:
+    def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
         self.my_base_path = __file__
+        self.day = day
 
         self.SHAPE_SCORES = {
             "rock": 1,
@@ -95,6 +96,6 @@ class Day2(Solver):
         return sum(match_results)
 
 
-def solve_day(use_sample: bool):
-    solver = Day2(use_sample)
+def solve_day(day: int, use_sample: bool):
+    solver = Day2(day, use_sample)
     solver.solve_day()

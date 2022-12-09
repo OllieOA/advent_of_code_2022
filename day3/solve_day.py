@@ -3,9 +3,10 @@ from typing import List
 from solver import Solver
 
 class Day3(Solver):
-    def __init__(self, use_sample: bool) -> None:
+    def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
         self.my_base_path = __file__
+        self.day = day
 
     def _part1(self, data: List) -> int:
         total_sum = 0
@@ -44,6 +45,6 @@ class Day3(Solver):
         return total_sum
 
 
-def solve_day(use_sample: bool):
-    solver = Day3(use_sample)
+def solve_day(day: int, use_sample: bool):
+    solver = Day3(day, use_sample)
     solver.solve_day()

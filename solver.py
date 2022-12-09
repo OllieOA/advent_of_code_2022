@@ -3,7 +3,7 @@ import importlib
 import logging
 from pathlib import Path
 import time
-from typing import List, Callable, Tuple
+from typing import List, Callable
 
 _LOG_FORMATTER = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 _LOG = logging.getLogger(__name__)
@@ -19,6 +19,7 @@ class Solver():
     def __init__(self, use_sample: bool) -> None:
         self.use_sample = use_sample
         self.my_base_path = __file__
+        self.day = -1
 
     def part1(self, data: List) -> None:
         # Implement
@@ -30,7 +31,7 @@ class Solver():
 
     def _load_data(self, file_path: Path) -> List:
         with open(file_path, "r") as f:
-            lines = [x.strip() for x in f.readlines()]
+            lines = [x.strip("\n") for x in f.readlines()]
         return lines
 
     def _solve(self, solver: Callable, part: int, use_sample: bool) -> None:
@@ -54,15 +55,27 @@ class Solver():
         _LOG.info(f"| Solved! Answer: {result} in {(end_time-start_time) * 1000} milliseconds!")
 
     def solve_day(self):
+        _LOG.info(f"| =------= DAY {self.day} =------= |")
         self._solve(self.part1, 1, self.use_sample)
         self._solve(self.part2, 2, self.use_sample)
+        _LOG.info(f"| =-----= COMPLETE =-----= |")
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
-    args.add_argument("-d", type=int, help="Day to run (integer)")
+    args.add_argument("d", type=int, help="Day to run (integer)")
     args.add_argument("-s", action="store_true", help="Run with sample input")
+    args.add_argument("-a", action="store_true", help="Run all days")
 
     opts = args.parse_args()
 
-    day_solver = importlib.import_module(f"day{opts.d}.solve_day")
-    day_solver.solve_day(opts.s)
+    if opts.a:
+        days = range(1, 25+1)
+    else:
+        days = [opts.d]
+
+    for day in days:
+        try:
+            day_solver = importlib.import_module(f"day{day}.solve_day")
+            day_solver.solve_day(day, opts.s)
+        except ImportError:
+            _LOG.error(f"!!! DAY {day} NOT IMPLEMENTED YET !!!")

@@ -3,9 +3,10 @@ from typing import List, Tuple
 from solver import Solver
 
 class Day4(Solver):
-    def __init__(self, use_sample: bool) -> None:
+    def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
         self.my_base_path = __file__
+        self.day = day
 
     def _get_group(self, group: str) -> Tuple[int]:
         group_spec = group.split(",")
@@ -46,6 +47,6 @@ class Day4(Solver):
 
         return any_overlap_count
 
-def solve_day(use_sample: bool):
-    solver = Day4(use_sample)
+def solve_day(day: int, use_sample: bool):
+    solver = Day4(day, use_sample)
     solver.solve_day()

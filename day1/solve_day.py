@@ -3,9 +3,10 @@ from typing import List, Tuple
 from solver import Solver
 
 class Day1(Solver):
-    def __init__(self, use_sample: bool) -> None:
+    def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
         self.my_base_path = __file__
+        self.day = day
 
     def _part1(self, data: List) -> Tuple[List, int]:
         elves = []
@@ -26,6 +27,6 @@ class Day1(Solver):
         return sum(sorted(elves, reverse=True)[:3]), []
 
 
-def solve_day(use_sample: bool):
-    solver = Day1(use_sample)
+def solve_day(day: int, use_sample: bool):
+    solver = Day1(day, use_sample)
     solver.solve_day()
