@@ -45,14 +45,14 @@ class Day7(Solver):
                 subdir_size = self._set_size(subdir)
                 subdirectory["size"] += subdir_size
 
-        return subdirectory["size"]
+        return int(subdirectory["size"])
 
     def _get_size(self, directory: Dict, all_dirs: Dict) -> Dict:
         for key, subdir in directory.items():
             if isinstance(subdir, Dict):
+                self._get_size(subdir, all_dirs)
                 if "size" in subdir.keys():
                     all_dirs[key] = subdir["size"]
-                self._get_size(subdir, all_dirs)
 
         return all_dirs
 
@@ -70,8 +70,8 @@ class Day7(Solver):
                 else:
                     curr_depth.append(target_dir)
                     
-                    if not self._recursive_get(directory, curr_depth):
-                        self._recursive_set(directory, curr_depth, {"files": {}, "size": 0})
+                    # if not self._recursive_get(directory, curr_depth):
+                    #     self._recursive_set(directory, curr_depth, {"files": {}, "size": 0})
             elif cmd_line.startswith("dir "):
                 curr_depth.append(cmd_line.split(" ")[1])
                 self._recursive_set(directory, curr_depth, {"files": {}, "size": 0})
@@ -89,10 +89,13 @@ class Day7(Solver):
         # self.logger.debug(json.dumps(all_dirs, indent=4))
 
         total_cleared_size = 0
-        for size in all_dirs.values():
+        dirs = []
+        for dir, size in all_dirs.items():
             if size <= 100000:
                 total_cleared_size += size
+                dirs.append(dir)
 
+        self.logger.debug(dirs)
         return total_cleared_size
 
     def part2(self, data: List) -> None:
