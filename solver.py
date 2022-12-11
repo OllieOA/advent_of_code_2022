@@ -55,7 +55,9 @@ class Solver:
         _LOG.info(f"| Part {part} | Solving |")
         result = solver(data)
         end_time = time.time()
-        _LOG.info(f"| Solved! Answer: {result} in {(end_time-start_time) * 1000} milliseconds!")
+        _LOG.info(
+            f"| Solved! Answer: {result} in {(end_time-start_time) * 1000: 0.3f} milliseconds!"
+        )
 
     def solve(self):
         _LOG.info(f"| =------= DAY {self.day} =------= |")

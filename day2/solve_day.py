@@ -47,7 +47,7 @@ class Day2(Solver):
             "Z": "win",
         }
 
-    def _part1(self, data: List) -> int:
+    def part1(self, data: List) -> int:
         match_results = []
         for match in data:
             match_score = 0
@@ -70,7 +70,7 @@ class Day2(Solver):
 
         return sum(match_results)
 
-    def _part2(self, data: List) -> int:
+    def part2(self, data: List) -> int:
         match_results = []
         for match in data:
             match_score = 0

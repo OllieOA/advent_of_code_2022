@@ -9,7 +9,7 @@ class Day3(Solver):
         self.my_base_path = __file__
         self.day = day
 
-    def _part1(self, data: List) -> int:
+    def part1(self, data: List) -> int:
         total_sum = 0
         for pack in data:
             compartment_1 = set([*pack[: len(pack) // 2]])
@@ -24,7 +24,7 @@ class Day3(Solver):
 
         return total_sum
 
-    def _part2(self, data: List) -> int:
+    def part2(self, data: List) -> int:
         total_sum = 0
         elf_groups = [data[x : x + 3] for x in range(0, len(data), 3)]
 

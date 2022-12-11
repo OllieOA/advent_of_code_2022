@@ -9,7 +9,7 @@ class Day1(Solver):
         self.my_base_path = __file__
         self.day = day
 
-    def _part1(self, data: List) -> Tuple[List, int]:
+    def _get_elf_calories(self, data: List) -> List:
         elves = []
         curr_total_callories = 0
         for calorie in data:
@@ -20,11 +20,15 @@ class Day1(Solver):
             curr_total_callories += int(calorie)
         elves.append(curr_total_callories)  # Get the last one
 
-        return max(elves), elves
+        return elves
 
-    def _part2(self, data: List) -> Tuple[int, List]:
-        _, elves = self._part1(data)
-        return sum(sorted(elves, reverse=True)[:3]), []
+    def part1(self, data: List) -> int:
+        elves = self._get_elf_calories(data)
+        return max(elves)
+
+    def part2(self, data: List) -> int:
+        elves = self._get_elf_calories(data)
+        return sum(sorted(elves, reverse=True)[:3])
 
 
 def solve_day(day: int, use_sample: bool):
