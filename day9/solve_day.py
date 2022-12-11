@@ -23,25 +23,8 @@ class Day9(Solver):
         snap_required = abs(head_pos[0] - tail_pos[0]) > 1 or abs(head_pos[1] - tail_pos[1]) > 1
         return snap_required
 
-    # def _visualise(self, links: List) -> None:
-    #     min_bound_x = 10e3
-    #     min_bound_y = 10e3
-    #     max_bound_x = 0
-    #     max_bound_y = 0
-
-    #     for link in links:
-    #         min_bound_x = min(min_bound_x, link[0])
-    #         max_bound_x = max(max_bound_x, link[0])
-    #         min_bound_y = min(min_bound_y, link[1])
-    #         max_bound_y = min(max_bound_y, link[1])
-
-    #     grid = np.ones((10, 10))
-    #     grid[:] = -1
-    #     for idx, link in enumerate(links):
-    #         grid[link[0] - min_bound_x, link[1] - min_bound_y] = idx
-
-    #     print(f"\r-----\n{np.rot90(grid)}\r")
-    #     time.sleep(1)
+    def _get_rope_direction_bias(self, parent_pos: List, child_pos: List) -> List[int]:
+        pass
 
     def part1(self, data: List) -> None:
         pos_h = [0, 0]
