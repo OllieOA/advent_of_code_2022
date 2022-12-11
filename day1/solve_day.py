@@ -2,6 +2,7 @@ from typing import List, Tuple
 
 from solver import Solver
 
+
 class Day1(Solver):
     def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
@@ -16,7 +17,6 @@ class Day1(Solver):
                 elves.append(curr_total_callories)
                 curr_total_callories = 0
                 continue
-            
             curr_total_callories += int(calorie)
         elves.append(curr_total_callories)  # Get the last one
 
