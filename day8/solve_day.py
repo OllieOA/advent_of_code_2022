@@ -71,4 +71,4 @@ class Day8(Solver):
 
 def solve_day(day: int, use_sample: bool):
     solver = Day8(day, use_sample)
-    solver.solve_day()
+    solver.solve()

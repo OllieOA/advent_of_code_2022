@@ -2,6 +2,7 @@ from typing import List
 
 from solver import Solver
 
+
 class Day2(Solver):
     def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
@@ -23,11 +24,7 @@ class Day2(Solver):
             "Z": "scissors",
         }
 
-        self.BEATS = {
-            "rock": "scissors",
-            "scissors": "paper",
-            "paper": "rock"
-        }
+        self.BEATS = {"rock": "scissors", "scissors": "paper", "paper": "rock"}
 
         self.LOSES_TO = {
             "rock": "paper",
@@ -98,4 +95,4 @@ class Day2(Solver):
 
 def solve_day(day: int, use_sample: bool):
     solver = Day2(day, use_sample)
-    solver.solve_day()
+    solver.solve()

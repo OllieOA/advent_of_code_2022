@@ -5,7 +5,7 @@ from pathlib import Path
 import time
 from typing import List, Callable
 
-_LOG_FORMATTER = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+_LOG_FORMATTER = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 _LOG = logging.getLogger(__name__)
 
 _LOG_STREAM_HANDLER = logging.StreamHandler()
@@ -15,7 +15,7 @@ _LOG.addHandler(_LOG_STREAM_HANDLER)
 _LOG.setLevel(logging.DEBUG)
 
 
-class Solver():
+class Solver:
     def __init__(self, use_sample: bool) -> None:
         self.use_sample = use_sample
         self.my_base_path = __file__
@@ -57,11 +57,12 @@ class Solver():
         end_time = time.time()
         _LOG.info(f"| Solved! Answer: {result} in {(end_time-start_time) * 1000} milliseconds!")
 
-    def solve_day(self):
+    def solve(self):
         _LOG.info(f"| =------= DAY {self.day} =------= |")
         self._solve(self.part1, 1, self.use_sample)
         self._solve(self.part2, 2, self.use_sample)
         _LOG.info(f"| =-----= COMPLETE =-----= |")
+
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     opts = args.parse_args()
 
     if opts.a:
-        days = range(1, 25+1)
+        days = range(1, 25 + 1)
     else:
         days = [opts.d]
 

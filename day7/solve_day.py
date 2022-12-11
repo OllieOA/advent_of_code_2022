@@ -3,6 +3,7 @@ from typing import List, Dict
 
 from solver import Solver
 
+
 class Day7(Solver):
     def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
@@ -10,7 +11,7 @@ class Day7(Solver):
         self.day = day
 
         self.META_KEYS = ["files", "size"]
-    
+
     def _recursive_get(self, directory: Dict, depth: List) -> str:
         curr_object = directory[depth[0]]
         for key in depth[1:]:
@@ -19,7 +20,7 @@ class Day7(Solver):
                 return None
 
         return curr_object
-            
+
     def _recursive_set(self, directory: Dict, depth: List, target_object: Dict) -> None:
         curr_object = directory[depth[0]]
         for key in depth[1:-1]:
@@ -69,14 +70,14 @@ class Day7(Solver):
                     curr_depth.pop()
                 else:
                     curr_depth.append(target_dir)
-                    
+
                     # if not self._recursive_get(directory, curr_depth):
                     #     self._recursive_set(directory, curr_depth, {"files": {}, "size": 0})
             elif cmd_line.startswith("dir "):
                 curr_depth.append(cmd_line.split(" ")[1])
                 self._recursive_set(directory, curr_depth, {"files": {}, "size": 0})
                 curr_depth.pop()
-            
+
             elif cmd_line[0].isnumeric():
                 file_read = {cmd_line.split(" ")[1]: int(cmd_line.split(" ")[0])}
                 self._recursive_update_file(directory, curr_depth, file_read)
@@ -101,6 +102,7 @@ class Day7(Solver):
     def part2(self, data: List) -> None:
         pass
 
+
 def solve_day(day: int, use_sample: bool):
     solver = Day7(day, use_sample)
-    solver.solve_day()
+    solver.solve()
