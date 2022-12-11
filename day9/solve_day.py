@@ -1,4 +1,7 @@
+import time
 from typing import List
+
+import numpy as np
 
 from solver import Solver
 
@@ -8,12 +11,87 @@ class Day9(Solver):
         super().__init__(use_sample)
         self.my_base_path = __file__
         self.day = day
+        self.DIRECTIONS = {
+            "U": [0, 1],
+            "D": [0, -1],
+            "L": [-1, 0],
+            "R": [1, 0],
+        }
+
+    def _is_snap_rope_required(self, head_pos: List, tail_pos: List) -> bool:
+        # True if rope needs to be snapped
+        snap_required = abs(head_pos[0] - tail_pos[0]) > 1 or abs(head_pos[1] - tail_pos[1]) > 1
+        return snap_required
+
+    # def _visualise(self, links: List) -> None:
+    #     min_bound_x = 10e3
+    #     min_bound_y = 10e3
+    #     max_bound_x = 0
+    #     max_bound_y = 0
+
+    #     for link in links:
+    #         min_bound_x = min(min_bound_x, link[0])
+    #         max_bound_x = max(max_bound_x, link[0])
+    #         min_bound_y = min(min_bound_y, link[1])
+    #         max_bound_y = min(max_bound_y, link[1])
+
+    #     grid = np.ones((10, 10))
+    #     grid[:] = -1
+    #     for idx, link in enumerate(links):
+    #         grid[link[0] - min_bound_x, link[1] - min_bound_y] = idx
+
+    #     print(f"\r-----\n{np.rot90(grid)}\r")
+    #     time.sleep(1)
 
     def part1(self, data: List) -> None:
-        pass
+        pos_h = [0, 0]
+        pos_t = [0, 0]
+
+        all_pos_t = {",".join([str(x) for x in pos_t])}
+
+        for instruction in data:
+            direction = instruction.split(" ")[0]
+            num = int(instruction.split(" ")[1])
+
+            direction_vector = self.DIRECTIONS[direction]
+
+            for _ in range(num):
+                lag_pos_h = pos_h.copy()
+                pos_h = [sum(i) for i in zip(pos_h, direction_vector)]
+                if self._is_snap_rope_required(pos_h, pos_t):
+                    pos_t = lag_pos_h
+                    all_pos_t.add(",".join([str(x) for x in pos_t]))
+        return len(all_pos_t)
 
     def part2(self, data: List) -> None:
-        pass
+        links = [[0, 0]] * 4
+
+        all_pos_t = {",".join([str(x) for x in [0, 0]])}
+
+        for instruction in data:
+            direction = instruction.split(" ")[0]
+            num = int(instruction.split(" ")[1])
+
+            direction_vector = self.DIRECTIONS[direction]
+
+            # TODO FIX THE LOGIC TO PULL THE ROPE IN RATHER THAN DRAG
+            for _ in range(num):
+                parent_link_prev = links[0].copy()
+                links[0] = [sum(i) for i in zip(links[0], direction_vector)]
+                print("Moved", links[0])
+
+                for idx in range(1, len(links)):
+                    if self._is_snap_rope_required(links[idx - 1], links[idx]):
+                        prev_location = links[idx].copy()
+                        links[idx] = parent_link_prev
+                        parent_link_prev = prev_location.copy()
+                        print(f"Update: {idx}", links)
+
+                print("Step finished")
+                all_pos_t.add(",".join([str(x) for x in links[-1]]))
+            print("Instruction finished")
+
+        return len(all_pos_t)
 
 
 def solve_day(day: int, use_sample: bool):
