@@ -1,5 +1,5 @@
-from operator import add, sub, mul, floordiv
-from typing import List, Dict
+from operator import add, sub, mul
+from typing import List
 
 from solver import Solver
 
@@ -25,7 +25,9 @@ class Monkey:
         self.false_target = false_target
         self.worries = worries
 
-        self.OPERATIONS = {"+": add, "-": sub, "*": mul, "/": floordiv}
+        self.lcm: int
+
+        self.OPERATIONS = {"+": add, "-": sub, "*": mul}
         self.operation = self.OPERATIONS[self.operator]
 
         self.inspections = 0
@@ -40,6 +42,7 @@ class Monkey:
     def _do_operation(self, input_value: int) -> int:
         modifier = input_value if self.modifier is None else self.modifier
         op_val = self.operation(input_value, modifier)
+        op_val = op_val % self.lcm
         if self.worries:
             op_val = op_val // 3
         return op_val
@@ -63,10 +66,11 @@ class Day11(Solver):
         self.my_base_path = __file__
         self.day = day
 
-        self.OPERATORS = ["-", "+", "*", "/"]
+        self.OPERATORS = ["-", "+", "*"]
 
     def _build_monkey_list(self, data: List, worries: bool) -> List[Monkey]:
         monkeys = []
+        divisors = []
         for idx, instruction in enumerate(data):
             if instruction.startswith("Monkey"):
                 items = [int(x) for x in data[idx + 1].split(": ")[1].split(", ")]
@@ -79,6 +83,7 @@ class Day11(Solver):
                         modifier = None if component == "old" else int(component)
 
                 divisible_by = int(data[idx + 3].split(" ")[-1])
+                divisors.append(divisible_by)
                 true_target = int(data[idx + 4].split(" ")[-1])
                 false_target = int(data[idx + 5].split(" ")[-1])
 
@@ -94,6 +99,13 @@ class Day11(Solver):
                         worries,
                     )
                 )
+
+        lcm = 1
+        for divisor in divisors:
+            lcm *= divisor
+
+        for monkey in monkeys:
+            monkey.lcm = lcm
         return monkeys
 
     def _do_monkey_business(self, monkeys: List[Monkey], rounds: int) -> int:
@@ -111,7 +123,7 @@ class Day11(Solver):
         return self._do_monkey_business(monkeys, ROUNDS)
 
     def part2(self, data: List) -> None:
-        ROUNDS = 700
+        ROUNDS = 10000
         monkeys = self._build_monkey_list(data, worries=False)
         return self._do_monkey_business(monkeys, ROUNDS)
 
