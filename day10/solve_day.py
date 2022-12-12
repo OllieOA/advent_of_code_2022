@@ -11,14 +11,28 @@ class Day10(Solver):
 
     def part1(self, data: List) -> None:
         register = 1
-        action_cycles = [] * len(data)
-        print(action_cycles)
-        for instruction in data:
+        action_cycles = []
+
+        for idx, instruction in enumerate(data):
             if instruction.startswith("addx"):
-                value_to_add = int(instruction.split(" "))
+                action_cycles.append(0)
+                value_to_add = int(instruction.split(" ")[1])
+                action_cycles.append(value_to_add)
 
             elif instruction == "noop":
-                pass
+                action_cycles.append(0)
+
+        signal_strengths = []
+        signal_cycles = list(range(20, len(action_cycles), 40))
+        print("Signal cycles", signal_cycles)
+
+        for idx, val in enumerate(action_cycles):
+            actual_idx = idx + 1
+            if actual_idx in signal_cycles:
+                signal_strengths.append(register * actual_idx)
+            register += val
+
+        return sum(signal_strengths)
 
     def part2(self, data: List) -> None:
         pass
