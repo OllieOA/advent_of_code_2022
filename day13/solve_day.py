@@ -11,6 +11,7 @@ class Day13(Solver):
         self.day = day
 
     def _parse_pair(self, x, y) -> bool:
+        print("CHECKING PAIR", x, "AGAINST", y)
         x_is_list = isinstance(x, list)
         x_is_int = isinstance(x, int)
         y_is_list = isinstance(y, list)
@@ -18,6 +19,7 @@ class Day13(Solver):
 
         if x_is_int and y_is_int:
             if x == y:
+                print("RAISING EQUAL")
                 raise ValueError("Numbers equal")
             if x > y:
                 return False
@@ -26,26 +28,34 @@ class Day13(Solver):
         if x_is_list and y_is_list:
             if len(x) == 0 and len(y) >= 0:
                 return True
+            if len(y) == 0 and len(x) >= 0:
+                return False
 
-            true_comparisons = []
-            for a, b in zip(x, y):
+            all_true = []
+            print("ZIPPING:", list(zip(x[: len(y)], y)))
+            for a, b in zip(x[: len(y)], y):
+                print("ALL TRUE:", all_true)
+                print("COMPARING INTS", a, b)
                 try:
-                    true_comparisons.append(self._parse_pair(a, b))
+                    print("COMPARISON INT RESULT:", self._parse_pair(a, b))
+                    all_true.append(self._parse_pair(a, b))
                 except ValueError:
                     continue
-            if all(true_comparisons):
-                return True
-            else:
-                if len(y) < len(x):
-                    return False
+
+            if len(x) > len(y):
+                return False
+            print("RETURNING ALL TRUE", all_true)
+            return all(all_true)
 
         if x_is_int and y_is_list:
+            print("X INT, Y LIST")
             return self._parse_pair([x], y)
 
         if x_is_list and y_is_int:
+            print("X LIST, Y INT")
             return self._parse_pair(x, [y])
 
-        return True
+        raise Exception
 
     def part1(self, data: List) -> None:
         pairs = []
@@ -64,7 +74,7 @@ class Day13(Solver):
             if correct_order:
                 correct_pairs.append(idx + 1)
             print(
-                f"CHECKING PAIR {idx + 1}",
+                f"CHECKING PAIR #{idx + 1}",
                 pair[0],
                 "WITH",
                 pair[1],
