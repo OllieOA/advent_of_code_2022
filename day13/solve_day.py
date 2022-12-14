@@ -10,36 +10,42 @@ class Day13(Solver):
         self.my_base_path = __file__
         self.day = day
 
-    def _parse_element(self, element: str) -> List:
-        output_element = json.loads(element)
-        # output_element = []
-        # parsing_element = element[1:-1]  # Discard outer brackets
-        # parsed = False
-        # while not parsed:
-        #     # Find the inner-most [] combination
+    def _parse_pair(self, x, y) -> bool:
+        x_is_list = isinstance(x, list)
+        x_is_int = isinstance(x, int)
+        y_is_list = isinstance(y, list)
+        y_is_int = isinstance(y, int)
 
-        #     if "[" in parsing_element:
-        #         opening_bracket_index = -1
-        #         closing_bracket_index = -1
-        #         for idx, object in enumerate(parsing_element):
-        #             if object == "[":
-        #                 opening_bracket_index = idx
-        #             if object == "]" and opening_bracket_index > -1:
-        #                 closing_bracket_index = idx
+        if x_is_int and y_is_int:
+            if x == y:
+                raise ValueError("Numbers equal")
+            if x > y:
+                return False
+            return True
 
-        #         if opening_bracket_index == -1 and closing_bracket_index == -1:
-        #             opening_bracket_index = 0  # Can use the whole element
+        if x_is_list and y_is_list:
+            if len(x) == 0 and len(y) >= 0:
+                return True
 
-        #         sub_element = [
-        #             int(x)
-        #             for x in parsing_element[opening_bracket_index : closing_bracket_index + 1]
-        #         ]
+            true_comparisons = []
+            for a, b in zip(x, y):
+                try:
+                    true_comparisons.append(self._parse_pair(a, b))
+                except ValueError:
+                    continue
+            if all(true_comparisons):
+                return True
+            else:
+                if len(y) < len(x):
+                    return False
 
-        #         output_element.append()
+        if x_is_int and y_is_list:
+            return self._parse_pair([x], y)
 
-        #     parsed = len(element) == 0
+        if x_is_list and y_is_int:
+            return self._parse_pair(x, [y])
 
-        return output_element
+        return True
 
     def part1(self, data: List) -> None:
         pairs = []
@@ -49,17 +55,25 @@ class Day13(Solver):
                 pairs.append(current_pair)
                 current_pair = []
             else:
-                current_pair.append(line)
+                current_pair.append(json.loads(line))
         pairs.append(current_pair)
 
-        parsed_pairs = []
-        for pair in pairs:
-            curr_pair = []
-            for element in pair:
-                current_pair.append(self._parse_element(element))
-            parsed_pairs.append(current_pair)
+        correct_pairs = []
+        for idx, pair in enumerate(pairs):
+            correct_order = self._parse_pair(*pair)
+            if correct_order:
+                correct_pairs.append(idx + 1)
+            print(
+                f"CHECKING PAIR {idx + 1}",
+                pair[0],
+                "WITH",
+                pair[1],
+                "CORRECT ORDER:",
+                correct_order,
+                "\n",
+            )
 
-        print(parsed_pairs)
+        return sum(correct_pairs)
 
     def part2(self, data: List) -> None:
         pass
