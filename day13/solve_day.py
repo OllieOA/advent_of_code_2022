@@ -89,7 +89,6 @@ class Day13(Solver):
             # Assume true
             packets_sorted = True
             iters += 1
-            swap = []
             for idx in range(len(packets) - 1):
                 packet_1 = deepcopy(packets[idx])  # Make copies
                 packet_2 = deepcopy(packets[idx + 1])
