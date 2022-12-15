@@ -1,4 +1,6 @@
 import json
+from copy import deepcopy
+import time
 from typing import List
 
 from solver import Solver
@@ -10,52 +12,44 @@ class Day13(Solver):
         self.my_base_path = __file__
         self.day = day
 
-    def _parse_pair(self, x, y) -> bool:
-        print("CHECKING PAIR", x, "AGAINST", y)
+    def _pair_in_order(self, x, y) -> bool:
         x_is_list = isinstance(x, list)
         x_is_int = isinstance(x, int)
         y_is_list = isinstance(y, list)
         y_is_int = isinstance(y, int)
 
+        if x_is_int and y_is_list:
+            return self._pair_in_order([x], y)
+
+        if x_is_list and y_is_int:
+            return self._pair_in_order(x, [y])
+
         if x_is_int and y_is_int:
             if x == y:
-                print("RAISING EQUAL")
                 raise ValueError("Numbers equal")
             if x > y:
                 return False
+
             return True
 
         if x_is_list and y_is_list:
-            if len(x) == 0 and len(y) >= 0:
-                return True
-            if len(y) == 0 and len(x) >= 0:
-                return False
+            while len(x) > 0 and len(y) > 0:
+                a = x.pop(0)
+                b = y.pop(0)
 
-            all_true = []
-            print("ZIPPING:", list(zip(x[: len(y)], y)))
-            for a, b in zip(x[: len(y)], y):
-                print("ALL TRUE:", all_true)
-                print("COMPARING INTS", a, b)
                 try:
-                    print("COMPARISON INT RESULT:", self._parse_pair(a, b))
-                    all_true.append(self._parse_pair(a, b))
+                    comparison = self._pair_in_order(a, b)
+                    if comparison is None:
+                        continue
+                    else:
+                        return comparison
                 except ValueError:
                     continue
 
-            if len(x) > len(y):
+            if len(x) == 0 and len(y) > 0:
+                return True
+            if len(x) > 0 and len(y) == 0:
                 return False
-            print("RETURNING ALL TRUE", all_true)
-            return all(all_true)
-
-        if x_is_int and y_is_list:
-            print("X INT, Y LIST")
-            return self._parse_pair([x], y)
-
-        if x_is_list and y_is_int:
-            print("X LIST, Y INT")
-            return self._parse_pair(x, [y])
-
-        raise Exception
 
     def part1(self, data: List) -> None:
         pairs = []
@@ -70,23 +64,44 @@ class Day13(Solver):
 
         correct_pairs = []
         for idx, pair in enumerate(pairs):
-            correct_order = self._parse_pair(*pair)
+            correct_order = self._pair_in_order(*pair)
             if correct_order:
                 correct_pairs.append(idx + 1)
-            print(
-                f"CHECKING PAIR #{idx + 1}",
-                pair[0],
-                "WITH",
-                pair[1],
-                "CORRECT ORDER:",
-                correct_order,
-                "\n",
-            )
-
         return sum(correct_pairs)
 
-    def part2(self, data: List) -> None:
+    def sort_lines(lines: List) -> List:
         pass
+
+    def part2(self, data: List) -> None:
+        packets = [
+            [[2]],
+            [[6]],
+        ]
+
+        for line in data:
+            if line != "":
+                packets.append(json.loads(line))
+
+        packets_sorted = False
+
+        iters = -1
+        while not packets_sorted:
+            # Assume true
+            packets_sorted = True
+            iters += 1
+            swap = []
+            for idx in range(len(packets) - 1):
+                packet_1 = deepcopy(packets[idx])  # Make copies
+                packet_2 = deepcopy(packets[idx + 1])
+
+                if not self._pair_in_order(packet_1, packet_2):
+                    packets_sorted = False
+                    packets[idx], packets[idx + 1] = packets[idx + 1], packets[idx]
+
+        first_divisor = packets.index([[2]]) + 1
+        second_divisor = packets.index([[6]]) + 1
+
+        return first_divisor * second_divisor
 
 
 def solve_day(day: int, use_sample: bool):
