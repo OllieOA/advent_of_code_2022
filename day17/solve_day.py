@@ -15,6 +15,7 @@ SHAPES = [
 ]
 
 SHAPE_HEIGHTS = [1, 3, 3, 4, 2]
+SHAPE_WIDTHS = [4, 3, 3, 1, 2]
 
 INSTRUCTIONS = {"<": -1, ">": 1}
 
@@ -39,7 +40,7 @@ class Day17(Solver):
             print(row_str)
 
     def _run_simulation(self, instructions: str, number_of_runs: int) -> int:
-        TREADMILL_SIZE = 500
+        TREADMILL_SIZE = 100
         grid = np.zeros((7, TREADMILL_SIZE)) * 2
         grid[:, 0] = 2
         # self._visualise(grid)
@@ -56,7 +57,7 @@ class Day17(Solver):
                 rock_rested = False
                 rock_idx_to_spawn = ridx % 5
 
-                # Pad if needed
+                # Treadmill if needed
                 if grid.shape[1] < highest_rock_level + 3 + SHAPE_HEIGHTS[rock_idx_to_spawn]:
                     new_padding = np.zeros((7, TREADMILL_SIZE - 50))
                     # print("GRABBING", grid[:, 100:].shape)
@@ -82,22 +83,26 @@ class Day17(Solver):
 
                 # Check if all elements can move sideways
                 moveable_sideways = True
-                for coord in rock_shape:
-                    curr_coord = (current_rock[0] + coord[0], current_rock[1] + coord[1])
-                    if curr_coord[0] + modifier < 0 or curr_coord[0] + modifier == 7:
-                        moveable_sideways = False
-                        break
-                    elif grid[curr_coord[0] + modifier, curr_coord[1]] == 2:
-                        moveable_sideways = False
-                        break
+                if current_rock[0] + modifier < 0:
+                    moveable_sideways = False
+                elif current_rock[0] + modifier + SHAPE_WIDTHS[rock_idx_to_spawn] - 1 == 7:
+                    moveable_sideways = False
+                # for coord in rock_shape:
+                #     curr_coord = (current_rock[0] + coord[0], current_rock[1] + coord[1])
+                #     if curr_coord[0] + modifier < 0 or curr_coord[0] + modifier == 7:
+                #         moveable_sideways = False
+                #         break
+                #     elif grid[curr_coord[0] + modifier, curr_coord[1]] == 2:
+                #         moveable_sideways = False
+                #         break
 
                 if moveable_sideways:
                     current_rock = (current_rock[0] + modifier, current_rock[1])
-                    grid[grid == 1] = 0
+                    # grid[grid == 1] = 0
 
-                    for coord in rock_shape:
-                        curr_coord = (current_rock[0] + coord[0], current_rock[1] + coord[1])
-                        grid[curr_coord[0], curr_coord[1]] = 1
+                    # for coord in rock_shape:
+                    #     curr_coord = (current_rock[0] + coord[0], current_rock[1] + coord[1])
+                    #     grid[curr_coord[0], curr_coord[1]] = 1
 
                 # Check if can move down
                 moveable_down = True
@@ -112,14 +117,16 @@ class Day17(Solver):
 
                 if moveable_down:
                     current_rock = (current_rock[0], current_rock[1] - 1)
-                    grid[grid == 1] = 0
+                    # grid[grid == 1] = 0
 
                     for coord in rock_shape:
                         curr_coord = (current_rock[0] + coord[0], current_rock[1] + coord[1])
                         grid[curr_coord[0], curr_coord[1]] = 1
 
                 else:
-                    grid[grid == 1] = 2  # Now stationary
+                    for coord in rock_shape:
+                        curr_coord = (current_rock[0] + coord[0], current_rock[1] + coord[1])
+                        grid[curr_coord[0], curr_coord[1]] = 2  # Stationary
 
                     rock_rested = True
                     # print("ROCK RESTED")
