@@ -3,7 +3,7 @@ from typing import List
 from solver import Solver
 
 
-class DayX(Solver):
+class Day16(Solver):
     def __init__(self, day: int, use_sample: bool) -> None:
         super().__init__(use_sample)
         self.my_base_path = __file__
@@ -17,5 +17,5 @@ class DayX(Solver):
 
 
 def solve_day(day: int, use_sample: bool):
-    solver = DayX(day, use_sample)
+    solver = Day16(day, use_sample)
     solver.solve()
