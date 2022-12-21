@@ -37,6 +37,33 @@ class Day12(Solver):
         queue.put(0, (start_node, None))
 
         # TODO Refactor this into a dictionary for convenient overwriting
+        """ https://python.plainenglish.io/a-algorithm-in-python-79475244b06f
+        1.   function Greedy(Graph, start, target):
+        2.      calculate the heurisitc value h(v) of starting node
+        3.      add the node to the opened list
+        4.      while True:
+        5.         if opened is empty:
+        6.            break # No solution found
+        7.         selecte_node = remove from opened list, the node with
+        8.                        the minimun heuristic value
+        9.         if selected_node == target:
+        10.           calculate path
+        11.           return path
+        12.        add selected_node to closed list
+        13.        new_nodes = get the children of selected_node
+        14.        if the selected node has children:
+        15.           for each child in children:
+        16.              calculate the heuristic value of child
+        17.              if child not in closed and opened lists:
+        18.                 child.parent = selected_node
+        19.                 add the child to opened list
+        20.              else if child in opened list:
+        21.                 if the heuristic values of child is lower than 
+        22.                  the corresponding node in opened list:
+        23.                    child.parent = selected_node
+        24.                    add the child to opened list
+        where h(v) is the sum of the distance of the v node from the initial node and the estimated cost from v node to the final node.
+        """
 
         while len(queue) > 0:
             curr_node_packet = queue.get(0)
