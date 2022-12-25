@@ -1,5 +1,3 @@
-import math
-from queue import PriorityQueue
 from typing import List, Tuple
 
 import numpy as np
@@ -13,8 +11,23 @@ class Day12(Solver):
         self.my_base_path = __file__
         self.day = day
 
-    def _get_pythag_dist(self, point1: Tuple, point2: Tuple) -> int:
-        return ((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2) ** 0.5
+    def _get_heuristic(self, node_coord: List) -> int:
+        # Bigger worse
+        pythag_dist = (
+            (self.goal_node[0] - self.goal_node[0]) ** 2 + (node_coord[1] - node_coord[1]) ** 2
+        ) ** 0.5
+
+        height_difference = (
+            self.grid[self.goal_node[0], self.goal_node[1]]
+            - self.grid[node_coord[0], node_coord[1]]
+        )
+        return pythag_dist + height_difference
+
+    def _sort_queue(self) -> None:
+        mapped_heuristics = {x[1]: x[0] for x in self.queue}
+        sorted_queue = dict(sorted(mapped_heuristics.items(), key=lambda x: x[1]))
+
+        self.queue = [(y, x) for x, y in sorted_queue.items()]
 
     def part1(self, data: List) -> None:
         grid_map_lists = []
@@ -22,19 +35,19 @@ class Day12(Solver):
             row_extract = [ord(x) - 96 for x in row]
             grid_map_lists.append(row_extract)
 
-        grid = np.array(grid_map_lists)
+        self.grid = np.array(grid_map_lists)
 
-        start_node_components = np.where(grid == (ord("S") - 96))
-        start_node = (start_node_components[0][0], start_node_components[1][0])
+        start_node_components = np.where(self.grid == (ord("S") - 96))
+        self.start_node = (start_node_components[0][0], start_node_components[1][0])
 
-        goal_node_components = np.where(grid == (ord("E") - 96))
-        goal_node = (goal_node_components[0][0], goal_node_components[1][0])
+        goal_node_components = np.where(self.grid == (ord("E") - 96))
+        self.goal_node = (goal_node_components[0][0], goal_node_components[1][0])
 
         explored = set([])
-        queue = PriorityQueue()
+        self.queue = []
 
-        # Node format is (heuristic, (node, successor))
-        queue.put(0, (start_node, None))
+        # Node format is (heuristic, (node, num_steps))
+        self.queue.append((self._get_heuristic(self.start_node), (self.start_node, 0)))
 
         # TODO Refactor this into a dictionary for convenient overwriting
         """ https://python.plainenglish.io/a-algorithm-in-python-79475244b06f
@@ -65,15 +78,16 @@ class Day12(Solver):
         where h(v) is the sum of the distance of the v node from the initial node and the estimated cost from v node to the final node.
         """
 
-        while len(queue) > 0:
-            curr_node_packet = queue.get(0)
+        while len(self.queue) > 0:
+            self._sort_queue()
+            curr_node_packet = self.queue.pop(0)
             curr_node = curr_node_packet[1][0]
-            if curr_node == goal_node:
-                pass  # TODO: Get back back
 
-            # Else,
-            explored.add(curr_node)
-            curr_height = grid[curr_node[0], curr_node[1]]
+            if all([x == y for x, y in zip(curr_node, self.goal_node)]):
+                return curr_node_packet[1][1]
+
+            explored.add(curr_node_packet)
+            curr_height = self.grid[curr_node[0], curr_node[1]]
 
             # Get and test adjacent nodes for suitability
             adjacent_nodes = []
@@ -84,18 +98,18 @@ class Day12(Solver):
             for adjacent_node in adjacent_nodes:
                 if adjacent_node in explored:
                     continue
-                elif adjacent_node[0] > grid.shape[0] or adjacent_node[1] > grid.shape[1]:
+                elif adjacent_node[0] > self.grid.shape[0] or adjacent_node[1] > self.grid.shape[1]:
                     continue
                 elif adjacent_node[0] < 0 or adjacent_node[1] < 0:
                     continue
 
-                elif abs(curr_height - grid[adjacent_node[0], adjacent_node[1]]) > 1:
+                elif abs(curr_height - self.grid[adjacent_node[0], adjacent_node[1]]) > 1:
                     continue
                 else:
-                    queue.put(
+                    self.queue.append(
                         (
-                            self._get_pythag_dist(adjacent_node, goal_node),
-                            (adjacent_node, curr_node),
+                            self._get_heuristic(adjacent_node, adjacent_node),
+                            (adjacent_node, curr_node_packet[1][1] + 1),
                         )
                     )
 
