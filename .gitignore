@@ -130,4 +130,7 @@ dmypy.json
 
 .vscode
 
+# AoC rules
+*.txt
+*.txt
 aoc22

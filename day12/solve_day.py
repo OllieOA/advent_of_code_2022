@@ -78,40 +78,40 @@ class Day12(Solver):
         where h(v) is the sum of the distance of the v node from the initial node and the estimated cost from v node to the final node.
         """
 
-        while len(self.queue) > 0:
-            self._sort_queue()
-            curr_node_packet = self.queue.pop(0)
-            curr_node = curr_node_packet[1][0]
+        # while len(self.queue) > 0:
+        #     self._sort_queue()
+        #     curr_node_packet = self.queue.pop(0)
+        #     curr_node = curr_node_packet[1][0]
 
-            if all([x == y for x, y in zip(curr_node, self.goal_node)]):
-                return curr_node_packet[1][1]
+        #     if all([x == y for x, y in zip(curr_node, self.goal_node)]):
+        #         return curr_node_packet[1][1]
 
-            explored.add(curr_node_packet)
-            curr_height = self.grid[curr_node[0], curr_node[1]]
+        #     explored.add(curr_node_packet)
+        #     curr_height = self.grid[curr_node[0], curr_node[1]]
 
-            # Get and test adjacent nodes for suitability
-            adjacent_nodes = []
-            for i in [-1, 1]:
-                adjacent_nodes.append((curr_node[0] + i, curr_node[1]))
-                adjacent_nodes.append((curr_node[0], curr_node[1] + i))
+        #     # Get and test adjacent nodes for suitability
+        #     adjacent_nodes = []
+        #     for i in [-1, 1]:
+        #         adjacent_nodes.append((curr_node[0] + i, curr_node[1]))
+        #         adjacent_nodes.append((curr_node[0], curr_node[1] + i))
 
-            for adjacent_node in adjacent_nodes:
-                if adjacent_node in explored:
-                    continue
-                elif adjacent_node[0] > self.grid.shape[0] or adjacent_node[1] > self.grid.shape[1]:
-                    continue
-                elif adjacent_node[0] < 0 or adjacent_node[1] < 0:
-                    continue
+        #     for adjacent_node in adjacent_nodes:
+        #         if adjacent_node in explored:
+        #             continue
+        #         elif adjacent_node[0] > self.grid.shape[0] or adjacent_node[1] > self.grid.shape[1]:
+        #             continue
+        #         elif adjacent_node[0] < 0 or adjacent_node[1] < 0:
+        #             continue
 
-                elif abs(curr_height - self.grid[adjacent_node[0], adjacent_node[1]]) > 1:
-                    continue
-                else:
-                    self.queue.append(
-                        (
-                            self._get_heuristic(adjacent_node, adjacent_node),
-                            (adjacent_node, curr_node_packet[1][1] + 1),
-                        )
-                    )
+        #         elif abs(curr_height - self.grid[adjacent_node[0], adjacent_node[1]]) > 1:
+        #             continue
+        #         else:
+        #             self.queue.append(
+        #                 (
+        #                     self._get_heuristic(adjacent_node, adjacent_node),
+        #                     (adjacent_node, curr_node_packet[1][1] + 1),
+        #                 )
+        #             )
 
     def part2(self, data: List) -> None:
         pass
