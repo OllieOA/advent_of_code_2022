@@ -132,5 +132,4 @@ dmypy.json
 
 # AoC rules
 *.txt
-*.txt
 aoc22
